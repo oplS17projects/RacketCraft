@@ -1,4 +1,4 @@
-# RacketCraft (10 words maximum)
+# RacketCraft
 
 ### Statement
 A 3D Minecraft Simulator in Racket. Making a 3D simulator for one of the most favorite games of all time is very challenging and interesting at the same time. I think this project will help us to learn more about Racket individually and Scheme language in general. 
