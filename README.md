@@ -9,27 +9,31 @@ Explain what approaches from class you will bring to bear on the project.
 Be explicit about the techiques from the class that you will use. For example:
 
 - Will you use data abstraction? How?
-	
+	+ Yes, in Minecraft there are two types of things that we would represent in software: blocks, and entitys. We would have some kind of block class to house all the types of blocks that would populate the terrain of the game. Entitys would represent the moving things in the world, whether that is the player itself, or enemies, etc. We also plan to have an object for the opengl environment because the rendering code shouldn't mix with the game code.
 
 - Will you use recursion? How?
-	+ Yes, element will be generated recursively during time playing.
+	+ Yes, the on-draw of the opengl canvas calls itself (I think? It must just indirectly trigger itself somehow). I don't believe we will have too many essential recursive functions, though.
 
 - Will you use map/filter/reduce? How?
-	
+	+ Yes, most likely for applying an update function on all the entities for every in-game motion update (i.e. applying gravity to all the entities in the active game world)
 
 - Will you use object-orientation? 
 	+ Yes, this project requires a huge amount of "oriented object".
-	+ We will make a class for each element in the game such as Rock, Weapons, Animals...
-	+ For example, each block must have its own position, and visibility in the map so it will be interacting easier to the main character.
+	+ We will make a class for each element in the game such as Blocks, Tools, Entities (anything that walks around/is affected by gravity)
+	+ For example, each block must have its own position, and material.
+	+ For example, each Entity (like an angry zombie) must have a health bar, damage value, texture, behavior function to update its position
 
 - Will you use functional approaches to processing your data? How?
 	+ Yes, using our functions to measure how far the character is away from the object. From then, we can determine that if the character is allowed to do stuffs on that object.
 
 - Will you use state-modification approaches? How? (If so, this should be encapsulated within objects. `set!` pretty much should only exist inside an object.)
+	+ Yes, constantly. There is a lot of state-modification that is required, like the position of entitys and their health. These values would always be encapsulated.
 
 - Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
+	+ no way
 - Will you use lazy evaluation approaches?
-
+	+ Possibly, cant think of a perfect application right now.
+	
 ### External Technologies
 - Drawing 3D objects
 - generate 3D automations
@@ -45,10 +49,11 @@ If you will be working with existing data, where will you get those data from? (
 Explain exactly what you'll have at the end. What will it be able to do at the live demo?
 - We will be able to play a simple Minecraft game in Racket with basic functionalities, such as:
 	+ At the demo, we will be able to:
-		+ Moving around the 3D racketcraft world.
-		+ Able to build rock and break rocks. 
-		+ Having an inventory of weapons, tools... 
-	+ We are expecting to add "farming - skills" if there is still time.
+		+ Moving around in a 3D world (of limited size) made of blocks. (Terrain generation is probably not on our list of todos)
+		+ Able to modify the 3D world by breaking, collecting, and placing these blocks.
+		+ (Stretch goal) Fight other enemies, like zombies, that spawn at night.
+		+ (Stretch goal) Crafting system to make tools/stuff
+		+ (Stretch goal) Simple, but infinite terrain generation and dynamic map loading (so you dont load all blocks at once)
 
 ### Evaluation of Results
 How will you know if you are successful? 
@@ -60,15 +65,17 @@ Create several paragraphs of narrative to explain the pieces and how they intero
 
 ## Schedule
 ### First Milestone (Sun Apr 9)
-- Able to draw 3D rocks, create a 3D building
-- Attach 3D resources into the project
+- Able to move around in a 3D world made of blocks. Limited map size. No collision physics.
+- Able to break and place blocks from your character.
+- blocks drop as item entities that you can walk over and pick up.
+- The blocks will be textured.
 
 ### Second Milestone (Sun Apr 16)
-- Able to move character through only the “allowed spaces” in the 3D building
-- Able to generate and process audio
+- Collision physics so you dont fall through the world.
+- health bar, takes falling damage
 
 ### Public Presentation (Mon Apr 24, Wed Apr 26, or Fri Apr 28 [your date to be determined later])
-- Able to play a simple Minecraft game with our project. Should finish all of the basic game-functionalities by this time
+- Complete a stretch goal, most likely implement other entities like animals or hostile creatures.
 
 ## Presentation Slides
 Slides available at: https://docs.google.com/presentation/d/1srbz82QFLJGQBim3tOUbULgHD4rR_sbK0Ar46lQP2iM/edit?usp=sharing
