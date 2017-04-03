@@ -5,8 +5,6 @@
          "gl-frame.rkt"
          graphics/graphics)
 
-
-
 (define grassTopTx (image->gl-vector "F:\\Users\\Jesus\\gitRepos\\racketcraft\\res\\grass_top.png"))
 (define grassSideTx (image->gl-vector "F:\\Users\\Jesus\\gitRepos\\racketcraft\\res\\grass_side.png"))
 (define dirtTx (image->gl-vector "F:\\Users\\Jesus\\gitRepos\\racketcraft\\res\\dirt.png"))
