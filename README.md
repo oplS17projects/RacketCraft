@@ -60,8 +60,10 @@ How will you know if you are successful?
 If you include some kind of _quantitative analysis,_ that would be good.
 
 ## Architecture Diagram
-Upload the architecture diagram you made for your slide presentation to your repository, and include it in-line here.
-Create several paragraphs of narrative to explain the pieces and how they interoperate.
+![alt tag](https://github.com/oplS17projects/RacketCraft/blob/master/Artboard.png)
+- OpenGL and pict3D environment will keep reading the signals from user (keyboard, mouse ...) and use that signal to determine what action the character will do by passing those signal arguments into our functions.
+- After then, collect needed resources and data to draw resources on the screen.
+- As an infinite loop, signal will never stop sending into the environemnt as long as the program is still opens.
 
 ## Schedule
 ### First Milestone (Sun Apr 9)
