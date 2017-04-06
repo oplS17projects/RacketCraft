@@ -111,7 +111,6 @@
       ; when the game goes out of focus, stop handling mouse events and unhide the mouse.
       (define/override (on-focus _focused)
         (set! focused _focused)
-        (print _focused)
         (if focused
             (hide-mouse)
             (unhide-mouse)))
