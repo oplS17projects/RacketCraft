@@ -2,12 +2,12 @@
 (require sgl/gl)
 (require (lib "gl.ss" "sgl")
          (lib "gl-vectors.ss" "sgl")
-         "gl-frame.rkt"
-         "block.rkt"
-         "input.rkt"
-         "player.rkt"
-         "zombie.rkt"
-         "world.rkt")
+         "../gl-frame.rkt"
+         "../block.rkt"
+         "../input.rkt"
+         "../player.rkt"
+         "../zombie.rkt"
+         "../world.rkt")
 
 (define-syntax-rule (gl-zombie-shape Vertex-Mode statement ...)
   (let () (glBegin Vertex-Mode) statement ... (glEnd)))
