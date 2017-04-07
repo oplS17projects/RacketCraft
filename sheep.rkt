@@ -1,13 +1,15 @@
-;; By Brendan Burns, with modifications by Scott Owens
+#lang racket
 (module gl-frame racket/gui
-  (require sgl/gl
-           sgl/gl-vectors
-           "textures.rkt")
-  (provide make-block
-           BLOCK_SIZE)
+  (require
+    (lib "gl.ss" "sgl")
+    (lib "gl-vectors.ss" "sgl")
+    sgl/gl
+    sgl/gl-vectors
+    "textures.rkt")
   
   (define BLOCK_SIZE 2)
   (define halfSize (/ BLOCK_SIZE 2))
+  
   (define (make-block id x y z)
     (define texture (getTexture id))
     (define x1 (+ x halfSize))
@@ -75,3 +77,11 @@
         ((equal? sym 'size) BLOCK_SIZE)
         ((equal? sym 'draw) (draw))))
     dispatch))
+
+(define (draw-opengl)
+  (glClear (+ GL_COLOR_BUFFER_BIT GL_DEPTH_BUFFER_BIT))
+  (glLoadIdentity)
+  (glBegin GL_QUADS)
+    (myWorld 'draw)
+  (glEnd)
+  )
