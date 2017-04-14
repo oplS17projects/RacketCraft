@@ -10,7 +10,7 @@
   (define (make-block id x y z)
     (define texture (getTexture id))
     (define isEmpty (equal? id 'empty))
-    (define renderSide1 #t) ; top face
+    (define renderSide1 #f) ; top face
     (define renderSide2 #f) ; (y = -1)
     (define renderSide3 #f) ; (z = 1)
     (define renderSide4 #f) ; (z = -1)
@@ -35,14 +35,23 @@
       (if renderSide5 (drawSide5) 0)
       (if renderSide6 (drawSide6) 0))
 
-    (define setSideVisability side
+    (define (setVisibility side visible)
+      (cond
+        ((equal? side 1) (set! renderSide1 visible))
+        ((equal? side 2) (set! renderSide2 visible))
+        ((equal? side 3) (set! renderSide3 visible))
+        ((equal? side 4) (set! renderSide4 visible))
+        ((equal? side 5) (set! renderSide5 visible))
+        ((equal? side 6) (set! renderSide6 visible))))
+    
     (define (dispatch sym)
       (cond
+        ((equal? sym 'draw) (draw))
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
         ((equal? sym 'size) BLOCK_SIZE)
-        ((equal? sym 'draw) (draw))))
+        ((equal? sym 'setVisibility) setVisibility)))
 
     ; offsets for colored-draw func
     (define x1 (+ x halfSize))

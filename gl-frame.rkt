@@ -96,16 +96,22 @@
       (define/override (on-size w h)
         (with-gl-context 
          (lambda ()
-           (gl-resize w h)))
-        (refresh))
+           (gl-resize w h))))
       
       (define/override (on-char key)
         (gl-handlekey key)
         (refresh))
 
+      (define redraw-mouse-count 0)
       (define/override (on-event event)
-        (if focused (for-each (lambda (x) (x event)) elisteners) 1)
-        (refresh))
+        (if (and (equal? (send event get-x) x-center) 
+                 (equal? (send event get-y) y-center))
+            0
+            (if (< redraw-mouse-count 2)
+                (set! redraw-mouse-count (+ redraw-mouse-count 1))
+                (begin (if focused (for-each (lambda (x) (x event)) elisteners) 1)
+                       (set! redraw-mouse-count 0)
+                       (refresh)))))
 
       (define focused #f)
 
