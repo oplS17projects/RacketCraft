@@ -3,22 +3,29 @@
   (provide world)
   
   (define (world)
-    (define blocks (init-world 8 8 8))
+    ; This is just an empty array, NO BLOCKS.
+    (define grid (init-world))
     (define (draw)
       (for-each (lambda (plane)
                   (for-each (lambda (row)
-                              (for-each (lambda (block) (block 'draw)) row)) plane)) blocks))
+                              (for-each (lambda (block) (block 'draw)) row)) plane)) grid))
     (define (dispatch sym)
       (cond ((equal? sym 'draw) (draw))))
     dispatch)
 
-  ; functions to initialize the world with a box of blocks.
-  (define (init-world length height width)
+  (define (init-world)
+    (init-grid 10 10 10))
+
+  (define (set-block x y z newId) 0)
+    
+  
+  ; functions to initialize the world's EMPTY grid, no blocks yet.
+  (define (init-grid length height width)
     (init-box 0 0 0 length height width '()))
   (define (init-box x y z length height width box-builder)
     (if (<= height 0)
         box-builder
-        (init-box x (+ y BLOCK_SIZE) z length (- height 1) width (cons (init-plane x y z length width '()) box-builder))))
+        (init-box x (- y BLOCK_SIZE) z length (- height 1) width (cons (init-plane x y z length width '()) box-builder))))
   (define (init-plane x y z length width plane-builder)
     (if (<= width 0)
         plane-builder

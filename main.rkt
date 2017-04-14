@@ -14,7 +14,14 @@
 ; contains blocks in world
 (define myWorld (world))
 
+(define fps 0)
+(define lastTime 0)
+
 (define (draw-opengl)
+  (print (/ 1000.0 (- (current-inexact-milliseconds) lastTime)))
+  (set! lastTime (current-inexact-milliseconds))
+  (print " ")
+  
   (glClear (+ GL_COLOR_BUFFER_BIT GL_DEPTH_BUFFER_BIT))
   (glLoadIdentity)
   

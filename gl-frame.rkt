@@ -104,7 +104,8 @@
         (refresh))
 
       (define/override (on-event event)
-        (if focused (for-each (lambda (x) (x event)) elisteners) 1))
+        (if focused (for-each (lambda (x) (x event)) elisteners) 1)
+        (refresh))
 
       (define focused #f)
 
