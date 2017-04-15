@@ -2,9 +2,9 @@
   (require "block.rkt")
   (provide world)
   
-  (define X-LEN 20)
-  (define Y-LEN 20)
-  (define Z-LEN 20)
+  (define X-LEN 40)
+  (define Y-LEN 40)
+  (define Z-LEN 40)
   
   (define (world)
     ; This is just an array of spaces, not necessarily blocks.
