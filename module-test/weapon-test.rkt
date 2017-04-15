@@ -1,22 +1,15 @@
 #lang racket/gui
-
+(require sgl/gl)
 (require (lib "gl.ss" "sgl")
          (lib "gl-vectors.ss" "sgl")
-         "gl-frame.rkt"
-         "block.rkt"
-         "input.rkt"
-         "player.rkt"
-         "world.rkt"
-         "weapon-inactive.rkt")
+         "../gl-frame.rkt"
+         "../block.rkt"
+         "../input.rkt"
+         "../player.rkt"
+         "../weapon-model.rkt")
 
 ; contains camera position / location
 (define myPlayer (player))
-
-; contains blocks in world
-(define myWorld (world))
-
-; contains weapon
-(define iWeapon (inactive-weapon))
 
 (define (draw-opengl)
   (glClear (+ GL_COLOR_BUFFER_BIT GL_DEPTH_BUFFER_BIT))
@@ -29,13 +22,11 @@
   (glTranslated (myPlayer 'x) (myPlayer 'y) (myPlayer 'z))
   
   (glBegin GL_QUADS)
-    (myWorld 'draw)
+    ((make-weapon 'grass 10 0 0) 'draw)
   (glEnd)
 )
 
+
 ;; Set the draw function
 (set-gl-draw-fn draw-opengl)
-(define window (gl-run))
-
-; initialize input handling
-(init-input-listeners window myPlayer)
+(define win (gl-run))

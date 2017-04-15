@@ -1,6 +1,11 @@
 (module player racket/gui
+  (require "weapon-inactive.rkt"
+           "weapon-model.rkt")
   (provide player)
   (define (player)
+    ; contains weapon
+    (define iWeapon (inactive-weapon))
+    
     ; Player move speed
     (define MOVE_SPEED .1)
 
@@ -13,6 +18,9 @@
     (define x 10)
     (define y -6)
     (define z -20)
+
+    (define (draw)
+      ((make-weapon 'grass x y z) 'draw))
 
     (define (dispatch sym)
       (cond
@@ -28,6 +36,7 @@
         ((equal? sym 'set-x) (lambda (new-x) (set! x new-x)))
         ((equal? sym 'set-y) (lambda (new-y) (set! y new-y)))
         ((equal? sym 'set-z) (lambda (new-z) (set! z new-z)))
+        ((equal? sym 'draw) (draw))
         ((equal? sym 'ms) MOVE_SPEED)
         (else (error "unknown symbol sent to player dispatch" sym))))
     dispatch))
