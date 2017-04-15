@@ -3,7 +3,7 @@
   (provide world)
   
   (define X-LEN 40)
-  (define Y-LEN 40)
+  (define Y-LEN 10)
   (define Z-LEN 40)
   
   (define (world)
