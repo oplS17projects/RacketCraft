@@ -1,0 +1,195 @@
+(module gl-frame racket/gui
+  (require sgl/gl
+           sgl/gl-vectors
+           "textures.rkt")
+  (provide make-zombie)
+
+  (define BLOCK_SIZE 1)
+  (define HEAD_WIDTH .5)
+  (define HEAD_HEIGHT 2)
+  (define BODY_WIDTH 1.5)
+  (define BODY_HEIGHT 3)
+  (define LEG_WIDTH 2)
+  (define LEG_HEIGHT 4)
+  (define ZOM_HEIGHT 7)
+  (define halfSize (/ BLOCK_SIZE 2))
+  
+  (define (make-zombie id x y z)
+    (define texture (getTexture id))
+    (define x1 (+ x halfSize))
+    (define xn1 (- x halfSize))
+    (define y1 (+ y halfSize))
+    (define yn1 (- y halfSize))
+    (define z1 (+ z halfSize))
+    (define zn1 (- z halfSize))
+
+    ;; Zombie variables
+    (define yh1 (+ ZOM_HEIGHT y1))
+    (define yhn1 (+ ZOM_HEIGHT yn1))
+    (define xh1 (+ x1 HEAD_WIDTH))
+    (define xhn1 xn1)
+    (define xb1 (+ x1 BODY_WIDTH))
+    (define xhd1 (+ xb1 1))
+    (define yb1 (- yh1 1))
+    (define yhd1 (+ y1 5))
+    (define ylhn1 (- yhn1 3))
+    (define xbn1 (- xn1 1))
+    
+    (define (draw)
+      ;; begin draw head
+      (glColor3f 1 0 1)
+      (glVertex3f  xh1 yh1  zn1)
+      (glVertex3f xhn1 yh1 zn1)
+      (glVertex3f xhn1 yh1  z1)
+      (glVertex3f  xh1 yh1  z1)
+ 
+      (glColor3f 1 0 1)
+      (glVertex3f  xh1 yhn1  z1)
+      (glVertex3f xhn1 yhn1  z1)
+      (glVertex3f xhn1 yhn1 zn1)
+      (glVertex3f  xh1 yhn1 zn1)
+  
+      (glColor3f 1 0 1)
+      (glVertex3f  xh1 yhn1 z1)
+      (glVertex3f xhn1 yhn1 z1)
+      (glVertex3f xhn1  yh1 z1)
+      (glVertex3f  xh1  yh1 z1)
+ 
+      (glColor3f 1 0 1)
+      (glVertex3f  xh1 yhn1 zn1)
+      (glVertex3f xhn1 yhn1 zn1)
+      (glVertex3f xhn1  yh1 zn1)
+      (glVertex3f  xh1  yh1 zn1)
+ 
+      (glColor3f 1 0 1)
+      (glVertex3f xhn1  yh1  z1)
+      (glVertex3f xhn1  yh1 zn1)
+      (glVertex3f xhn1 yhn1 zn1)
+      (glVertex3f xhn1 yhn1  z1)
+ 
+      (glColor3f 1 0 1)
+      (glVertex3f xhn1  yh1 zn1)
+      (glVertex3f xhn1  yh1  z1)
+      (glVertex3f xhn1 yhn1  z1)
+      (glVertex3f xhn1 yhn1 zn1)
+
+      ;; begin draw body
+      (glColor3f 0 1 0)
+      (glVertex3f  xb1 yb1  zn1)
+      (glVertex3f  xbn1 yb1  zn1)
+      (glVertex3f  xbn1 yb1  z1)
+      (glVertex3f  xb1 yb1  z1)
+ 
+      (glColor3f 0 1 0)
+      (glVertex3f  xb1 yn1  z1)
+      (glVertex3f  xbn1 yn1  z1)
+      (glVertex3f  xbn1 yn1  zn1)
+      (glVertex3f  xb1 yn1 zn1)
+  
+      (glColor3f 0 1 0)
+      (glVertex3f  xb1 yn1 z1)
+      (glVertex3f  xbn1 yn1 z1)
+      (glVertex3f  xbn1  yb1 z1)
+      (glVertex3f  xb1  yb1 z1)
+ 
+      (glColor3f 0 1 0)
+      (glVertex3f  xb1 yn1 zn1)
+      (glVertex3f  xbn1 yn1 zn1)
+      (glVertex3f  xbn1  yb1 zn1)
+      (glVertex3f  xb1  yb1 zn1)
+ 
+      (glColor3f 0 1 0)
+      (glVertex3f xbn1  yb1  z1)
+      (glVertex3f xbn1  yb1 zn1)
+      (glVertex3f xbn1 yn1 zn1)
+      (glVertex3f xbn1 yn1  z1)
+ 
+      (glColor3f 0 1 0)
+      (glVertex3f xbn1  yb1 zn1)
+      (glVertex3f xbn1  yb1  z1)
+      (glVertex3f xbn1 yn1   z1)
+      (glVertex3f xbn1 yn1  zn1)
+
+      ;; begin left hand
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f (- xbn1 1) yb1 zn1)
+      (glVertex3f xbn1 yb1 zn1)
+      (glVertex3f xbn1 yb1 (+ z1 2.5))
+      (glVertex3f (- xbn1 1)  yb1 (+ z1 3))
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f (- xbn1 1) yhd1 (+ z1 2.5))
+      (glVertex3f xbn1 yhd1 (+ z1 2.5))
+      (glVertex3f xbn1 yhd1 zn1)
+      (glVertex3f (- xbn1 1) yhd1 zn1)
+  
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f  (- xbn1 1) yhd1 (+ z1 2.5))
+      (glVertex3f xbn1 yhd1 (+ z1 2.5))
+      (glVertex3f xbn1 yb1 (+ z1 2.5))
+      (glVertex3f (- xbn1 1)  yb1 (+ z1 2.5))
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f (- xbn1 1) yhd1 zn1)
+      (glVertex3f xbn1 yhd1 zn1)
+      (glVertex3f xbn1 yb1 zn1)
+      (glVertex3f (- xbn1 1)    yb1 zn1)
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xbn1 yb1  (+ z1 2.5))
+      (glVertex3f xbn1 yb1 zn1)
+      (glVertex3f xbn1 yhd1 zn1)
+      (glVertex3f xbn1 yhd1 (+ z1 2.5))
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xbn1 yb1 zn1)
+      (glVertex3f xbn1 yb1  (+ z1 2.5))
+      (glVertex3f xbn1 yhd1 (+ z1 2.5))
+      (glVertex3f xbn1 yhd1 zn1)
+
+      ;; begin right hand
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xb1 yb1 zn1)
+      (glVertex3f xhd1 yb1 zn1)
+      (glVertex3f xhd1 yb1  (+ z1 2.5))
+      (glVertex3f xb1 yb1  (+ z1 2.5))
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xb1 yhd1 (+ z1 2.5))
+      (glVertex3f xhd1 yhd1 (+ z1 2.5))
+      (glVertex3f xhd1 yhd1 zn1)
+      (glVertex3f xb1 yhd1 zn1)
+  
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xb1 yhd1 (+ z1 2.5))
+      (glVertex3f xhd1 yhd1 (+ z1 2.5))
+      (glVertex3f xhd1 yb1 (+ z1 2.5))
+      (glVertex3f xb1 yb1 (+ z1 2.5))
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xb1 yhd1 zn1)
+      (glVertex3f xhd1 yhd1 zn1)
+      (glVertex3f xhd1 yb1 zn1)
+      (glVertex3f xb1 yb1 zn1)
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xhd1 yb1  (+ z1 2.5))
+      (glVertex3f xhd1 yb1 zn1)
+      (glVertex3f xhd1 yhd1 zn1)
+      (glVertex3f xhd1 yhd1 (+ z1 2.5))
+ 
+      (glColor3f 0.35 0.35 0.35)
+      (glVertex3f xhd1 yb1 zn1)
+      (glVertex3f xhd1 yb1 (+ z1 2.5))
+      (glVertex3f xhd1 yhd1 (+ z1 2.5))
+      (glVertex3f xhd1 yhd1 zn1))
+
+    (define (dispatch sym)
+      (cond
+        ((equal? sym 'x) x)
+        ((equal? sym 'y) y)
+        ((equal? sym 'z) z)
+        ((equal? sym 'size) BLOCK_SIZE)
+        ((equal? sym 'draw) (draw))))
+    dispatch))
+  
