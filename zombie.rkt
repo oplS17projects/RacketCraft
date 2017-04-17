@@ -28,6 +28,10 @@
     (define vec-y (/ (random 10) 100))
     (define vec-z (/ (random 10) 100))
     (define distance 0)
+
+    ;; Zombie attributes
+    (define ZOM-HEALTH 10)
+    (define ZOM-DAMAGE 2)
     
     ;; Zombie variables
     (define yh1 (+ ZOM_HEIGHT y1))
@@ -200,12 +204,30 @@
                  (set! y (- y vec-y))
                  (set! z (- z vec-z))
                  (set! distance (+ distance (max vec-x vec-y vec-z))))))
+    
+    (define (get-distance player-x player-y player-z)
+      (let ((dx (- (sqr (abs x)) (sqr (abs player-x))))
+            (dy (- (sqr (abs y)) (sqr (abs player-y))))
+            (dz (- (sqr (abs z)) (sqr (abs player-z)))))
+       (sqrt (+ dx dy dz))))
 
+    (define (hurt damage)
+      (if (< ZOM-HEALTH damage)
+          (set! ZOM-HEALTH 0)
+          (set! ZOM-HEALTH (- ZOM-HEALTH damage))))
+
+    (define (isDead)
+      (equal? ZOM-HEALTH 0))
+          
     (define (dispatch sym)
       (cond
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
+        ((equal? sym 'attack) ZOM-DAMAGE)
+        ((equal? sym 'hurt) (hurt))
+        ((equal? sym 'get-distance) (get-distance))
+        ((equal? sym 'isDead) (isDead))
         ((equal? sym 'update) (update))
         ((equal? sym 'size) BLOCK_SIZE)
         ((equal? sym 'draw) (draw))))
