@@ -2,7 +2,7 @@
   (provide player)
   (define (player)
     ; Player move speed
-    (define MOVE_SPEED .1)
+    (define MOVE_SPEED .6)
 
     ; Camera orientation
     (define xrot 0)

@@ -14,9 +14,50 @@
       (for-each (lambda (plane)
                   (for-each (lambda (row)
                               (for-each (lambda (block) (block 'draw)) row)) plane)) grid))
+  (define (set-block x y z newId)
+    (define (getNth n theList)
+      (if (equal? n 0)
+          (car theList)
+          (getNth (- n 1) (cdr theList))))
+    (define (setAdjacentVisibility x y z visibility)
+      (if (< (+ y 1) Y-LEN)
+          (((getNth x (getNth z (getNth (+ y 1) grid))) 'setVisibility) 2 visibility)
+          0)
+      (if (>= (- y 1) 0)
+          (((getNth x (getNth z (getNth (- y 1) grid))) 'setVisibility) 1 visibility)
+          0)
+      (if (< (+ z 1) Z-LEN)
+          (((getNth x (getNth (+ z 1) (getNth y grid))) 'setVisibility) 3 visibility)
+          0)
+      (if (>= (- z 1) 0)
+          (((getNth x (getNth (- z 1) (getNth y grid))) 'setVisibility) 4 visibility)
+          0)
+      (if (< (+ x 1) X-LEN)
+          (((getNth (+ x 1) (getNth z (getNth y grid))) 'setVisibility) 6 visibility)
+          0)
+      (if (>= (- x 1) 0)
+          (((getNth (- x 1) (getNth z (getNth y grid))) 'setVisibility) 5 visibility)
+          0))
+    ; get to it
+    (let* ([block (getNth x (getNth z (getNth y grid)))]
+           [oldId (block 'id)])
+      (if (equal? oldId newId)
+          ; dont do anything same ID
+          0
+          (begin ((block 'set-id) newId)
+                 (if (equal? newId 'empty)
+                     ;turn on all adjacent quads
+                     (setAdjacentVisibility x y z #t)
+                     (if (equal? oldId 'empty)
+                         ;turn off all adjacent quads
+                         (setAdjacentVisibility x y z #f)
+                         ;dont do anything
+                         0))))))
     (define (dispatch sym)
       (cond ((equal? sym 'draw) (draw))))
     (init-world grid)
+    (set-block 0 0 0 'empty)
+    (set-block 4 4 4 'empty)
     dispatch)
 
   (define (init-world grid)
@@ -41,19 +82,6 @@
         plane)
        (set! planeNum (+ planeNum 1)))
      grid))
-
-  (define (set-block x y z newId)
-    (define (getNth n theList)
-      (if (equal? n 0)
-          (car theList)
-          (getNth (- n 1) (cdr theList))))
-    0
-    ;(define block-plane (getNth y grid))
-    ;(define block-row   (getNth z
-    ; get to it
-  ;  (((getNth x (getNth z (getNth y grid))) 'setVisibility) 1 #t)
-    ; get to its neighbors
-    )
     
   
   ; functions to initialize the world's EMPTY grid, no blocks yet.

@@ -10,7 +10,7 @@
   (define (make-block id x y z)
     (define texture (getTexture id))
     (define isEmpty (equal? id 'empty))
-    (define renderSide1 #f) ; top face
+    (define renderSide1 #f) ; (y = 1)
     (define renderSide2 #f) ; (y = -1)
     (define renderSide3 #f) ; (z = 1)
     (define renderSide4 #f) ; (z = -1)
@@ -50,6 +50,8 @@
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
+        ((equal? sym 'id) id)
+        ((equal? sym 'set-id) set-id)
         ((equal? sym 'size) BLOCK_SIZE)
         ((equal? sym 'setVisibility) setVisibility)))
 
