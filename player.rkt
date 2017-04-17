@@ -5,6 +5,13 @@
   (define (player)
     ; contains weapon
     (define iWeapon (inactive-weapon))
+
+    ;; Player Attributes
+    (define PLAYER-HEALTH 100)
+    (define PLAYER-DAMAGE 10)
+
+    ;; Player inventory
+    ;; Todo -- Need to figure out how to make inventory list here
     
     ; Player move speed
     (define MOVE_SPEED .1)
@@ -22,6 +29,19 @@
     (define (draw)
       ((make-weapon 'grass x y z) 'draw))
 
+    (define (attack from-distance)
+      (if (< 0.8 from-distance)
+          (* (abs from-distance) PLAYER-DAMAGE)
+          PLAYER-DAMAGE))
+
+    (define (get-hurt damage)
+      (if (> damage PLAYER-HEALTH)
+          (set! PLAYER-HEALTH 0)
+          (set! PLAYER-HEALTH (- PLAYER-HEALTH damage))))
+
+    (define (isDead)
+      (equal? PLAYER-HEALTH 0))
+
     (define (dispatch sym)
       (cond
         ((equal? sym 'xrot) xrot)
@@ -33,6 +53,9 @@
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
+        ((equal? sym 'attack) (attack))
+        ((equal? sym 'isDead) (isDead))
+        ((equal? sym 'get-hurt) (get-hurt))
         ((equal? sym 'set-x) (lambda (new-x) (set! x new-x)))
         ((equal? sym 'set-y) (lambda (new-y) (set! y new-y)))
         ((equal? sym 'set-z) (lambda (new-z) (set! z new-z)))
