@@ -1,0 +1,16 @@
+(module entities racket/gui
+  (provide entities)
+  (define (entities)
+    (define entityList (list))
+    (define (update)
+      (for-each (lambda (entity) (entity 'update)) entityList))
+    (define (draw)
+      (for-each (lambda (entity) (entity 'draw)) entityList))
+    (define (add-entity entity)
+      (set! entityList (cons entity entityList)))
+    (define (dispatch sym)
+      (cond
+        ((equal? sym 'update) (update))
+        ((equal? sym 'draw) (draw))
+        ((equal? sym 'add-entity) add-entity)))
+    dispatch))

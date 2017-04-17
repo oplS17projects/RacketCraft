@@ -83,7 +83,10 @@
     (class canvas%
       (inherit refresh with-gl-context swap-gl-buffers set-cursor)
       (define init? #f)
+      (define refresh-queue 1)
       (define/override (on-paint)
+        (set! refresh-queue (- refresh-queue 1))
+        (print refresh-queue)
         (with-gl-context
          (lambda ()
            (unless init?
@@ -96,15 +99,24 @@
       (define/override (on-size w h)
         (with-gl-context 
          (lambda ()
-           (gl-resize w h)))
-        (refresh))
+           (gl-resize w h))))
       
       (define/override (on-char key)
+        (set! refresh-queue (+ refresh-queue 1))
         (gl-handlekey key)
         (refresh))
 
+      (define redraw-mouse-count 0)
       (define/override (on-event event)
-        (if focused (for-each (lambda (x) (x event)) elisteners) 1))
+        (if (and (equal? (send event get-x) x-center) 
+                 (equal? (send event get-y) y-center))
+            0
+            (if (< redraw-mouse-count -1)
+                (set! redraw-mouse-count (+ redraw-mouse-count 1))
+                (begin (set! refresh-queue (+ refresh-queue 1))
+                       (if focused (for-each (lambda (x) (x event)) elisteners) 1)
+                       (set! redraw-mouse-count 0)
+                       (refresh)))))
 
       (define focused #f)
 
