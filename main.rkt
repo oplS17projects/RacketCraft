@@ -8,6 +8,7 @@
          "input.rkt"
          "player.rkt"
          "world.rkt"
+         "weapon-inactive.rkt"
          "zombie.rkt")
 
 ; contains camera position / location
@@ -18,6 +19,8 @@
 ; contains blocks in world
 (define myWorld (world))
 
+; contains weapon
+(define iWeapon (inactive-weapon))
 (define fps 0)
 (define lastTime 0)
 
@@ -41,7 +44,6 @@
   (myWorld 'draw)
   (glEnd)
 )
-
 
 ;; Set the draw function
 (set-gl-draw-fn draw-opengl)

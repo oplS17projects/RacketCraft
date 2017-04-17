@@ -21,6 +21,17 @@
     (define yhn1 (+ yn1 1))
     (define zh1 (- z1 1))
     (define zhn1 (+ zn1 1))
+
+    ;; Sheep Attributes
+    (define SHEEP-HEALTH 10)
+    (define SHEEP-MEAT 1)
+
+    ;; initial velocity
+    (define vec-x (/ (random 10) 100))
+    (define vec-y (/ (random 10) 100))
+    (define vec-z (/ (random 10) 100))
+    (define speed (/ (random 10) 100))
+    (define distance 0)
   
     (define (draw)
       ;; Drawing body
@@ -107,11 +118,40 @@
       (glVertex3f xn1 yhn1  zh1)
       (glVertex3f xn1 yhn1 zhn1))
 
+    (define (update)
+      (if (> distance 1.5)
+          (begin (set! distance 0)
+                  (* vec-x -1)
+                  (* vec-y -1)
+                  (* vec-z -1))
+          (begin (set! x (- x vec-x))
+                 (set! y (- y vec-y))
+                 (set! z (- z vec-z))
+                 (set! distance (+ distance (max vec-x vec-y vec-z))))))
+
+    (define (get-distance player-x player-y player-z)
+      (let ((dx (- (sqr (abs x)) (sqr (abs player-x))))
+            (dy (- (sqr (abs y)) (sqr (abs player-y))))
+            (dz (- (sqr (abs z)) (sqr (abs player-z)))))
+       (sqrt (+ dx dy dz))))
+
+    (define (hurt damage)
+      (if (< SHEEP-HEALTH damage)
+          (set! SHEEP-HEALTH 0)
+          (set! SHEEP-HEALTH (- SHEEP-HEALTH damage))))
+
+    (define (isDead)
+      (equal? SHEEP-HEALTH 0))
+
     (define (dispatch sym)
       (cond
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
+        ((equal? sym 'update) (update))
+        ((equal? sym 'hurt) (hurt))
+        ((equal? sym 'isDead) (isDead))
+        ((equal? sym 'get-distance) (get-distance))
         ((equal? sym 'size) BLOCK_SIZE)
         ((equal? sym 'draw) (draw))))
     dispatch))

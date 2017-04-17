@@ -16,6 +16,7 @@
     (define renderSide4 #f) ; (z = -1)
     (define renderSide5 #f) ; (x = -1)
     (define renderSide6 #f) ; (x = 1)
+    (define isVisible #t)   ; used to check if this block is visible
 
     (define (set-id newId)
       (set! texture (getTexture id))
@@ -43,6 +44,37 @@
         ((equal? side 4) (set! renderSide4 visible))
         ((equal? side 5) (set! renderSide5 visible))
         ((equal? side 6) (set! renderSide6 visible))))
+
+    (define (setBlockVisibility visible)
+      (begin (set! renderSide1 visible)
+             (set! renderSide2 visible)
+             (set! renderSide3 visible)
+             (set! renderSide4 visible)
+             (set! renderSide5 visible)
+             (set! renderSide6 visible)
+             ;; Hung -- Currently I do not know which type value of visible is
+             ;; so I am just assuming to use this function to make block VISIBLE
+             ;; will update later to check visible values by "cond"
+             ;; and set isVisible #t or #f afterward
+             (set! isVisible #t)))
+    
+    (define (get-distance player-x player-y player-z)
+      (let ((dx (- (sqr (abs x)) (sqr (abs player-x))))
+            (dy (- (sqr (abs y)) (sqr (abs player-y))))
+            (dz (- (sqr (abs z)) (sqr (abs player-z)))))
+       (sqrt (+ dx dy dz))))
+
+    (define (break)
+      (if (equal? isVisible #t)
+          (begin (setBlockVisibility #f)
+                 (set! isVisible #f))
+          #f))
+
+    (define (make)
+      (if (equal? isVisible #f)
+          (begin (setBlockVisibility #t)
+                 (set! isVisible #t))
+          #f))
     
     (define (dispatch sym)
       (cond
@@ -52,6 +84,9 @@
         ((equal? sym 'z) z)
         ((equal? sym 'id) id)
         ((equal? sym 'set-id) set-id)
+        ((equal? sym 'break) (break))
+        ((equal? sym 'make) (make))
+        ((equal? sym 'get-distance) (get-distance))
         ((equal? sym 'size) BLOCK_SIZE)
         ((equal? sym 'setVisibility) setVisibility)))
 
