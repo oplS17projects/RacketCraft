@@ -1,6 +1,9 @@
 (module player racket/gui
   (require "weapon-inactive.rkt"
-           "weapon-model.rkt")
+           "weapon-model.rkt"
+           math/array
+           racket/vector
+           sgl/gl)
   (provide player)
   (define (player)
     ; contains weapon
@@ -26,6 +29,19 @@
     (define y -6)
     (define z -20)
 
+    ;; Variables needed to get ray
+    (define projects (make-vector 10))
+    (define views (make-vector 10))
+    (define ports (make-vector 10))
+    (define ray-start (make-vector 3))
+    (define ray-end (make-vector 3))
+    (define rayx-start 0)
+    (define rayy-start 0)
+    (define rayz-start 0)
+    (define rayx-end 0)
+    (define rayy-end 0)
+    (define rayz-end 0)
+
     (define (draw)
       ((make-weapon 'grass x y z) 'draw))
 
@@ -33,6 +49,26 @@
       (if (< 0.8 from-distance)
           (* (abs from-distance) PLAYER-DAMAGE)
           PLAYER-DAMAGE))
+
+    (define (getray mousex mousey)
+      ;; Getting the values to all views and projections
+      (begin (glGetFloatv GL_PROJECTION_MATRIX projects)
+             (glGetFloatv GL_MODELVIEW_MATRIX views)
+             (glGetIntegerv GL_VIEWPORT ports))
+      
+      (if (not (and (equal? (vector-length projects) 0)
+                    (equal? (vector-length views) 0)
+                    (equal? (vector-length ports) 0)))
+          (begin (gluUnProject mousex mousey 0 views projects ports ray-start)
+                 (gluUnProject mousex mousey 1 views projects ports ray-end)
+                 (if (not (and (equal? (vector-length ray-start) 0)
+                               (equal? (vector-length ray-end) 0)))
+                     (begin (vector->values ray-start rayx-start rayy-start rayz-start)
+                            (vector->values ray-end rayx-end rayy-end rayz-end))
+                     "Failed to get Ray vector"))
+          "Failed getting port views")
+      )
+     
 
     (define (get-hurt damage)
       (if (> damage PLAYER-HEALTH)
@@ -53,6 +89,7 @@
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
+        ((equal? sym 'getray) (getray))
         ((equal? sym 'attack) (attack))
         ((equal? sym 'isDead) (isDead))
         ((equal? sym 'get-hurt) (get-hurt))
