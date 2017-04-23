@@ -3,7 +3,8 @@
            "weapon-model.rkt"
            math/array
            racket/vector
-           sgl/gl)
+           sgl/gl
+           sgl/gl-vectors)
   (provide player)
   (define (player)
     ; contains weapon
@@ -30,11 +31,11 @@
     (define z -20)
 
     ;; Variables needed to get ray
-    (define projects (make-vector 10))
-    (define views (make-vector 10))
-    (define ports (make-vector 10))
-    (define ray-start (make-vector 3))
-    (define ray-end (make-vector 3))
+    (define projects (make-gl-float-vector 10))
+    (define views (make-gl-float-vector 10))
+    (define ports (make-gl-float-vector 10))
+    (define ray-start (make-gl-float-vector 3))
+    (define ray-end (make-gl-float-vector 3))
     (define rayx-start 0)
     (define rayy-start 0)
     (define rayz-start 0)
@@ -50,10 +51,15 @@
           (* (abs from-distance) PLAYER-DAMAGE)
           PLAYER-DAMAGE))
 
+    ;; Currently doing the algorithms based on http://antongerdelan.net/opengl/raycasting.html
+    ;; Will find a way with camera rotation direction
+    ;; Mouse x Mouse y is the position of the mouse click on the screen -- not on the racketworld
     (define (getray mousex mousey)
       ;; Getting the values to all views and projections
       (begin (glGetFloatv GL_PROJECTION_MATRIX projects)
-             (glGetFloatv GL_MODELVIEW_MATRIX views)
+             ;; binding the camera direction into a matrix
+             ;; if this doesn't work as expected, we could bind x-y-zrot into a new vector3f
+             (glGetFloatv GL_MODELVIEW_MATRIX views) 
              (glGetIntegerv GL_VIEWPORT ports))
       
       (if (not (and (equal? (vector-length projects) 0)
@@ -68,7 +74,6 @@
                      "Failed to get Ray vector"))
           "Failed getting port views")
       )
-     
 
     (define (get-hurt damage)
       (if (> damage PLAYER-HEALTH)

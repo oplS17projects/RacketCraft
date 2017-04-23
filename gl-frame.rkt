@@ -131,7 +131,6 @@
       (define (hide-mouse) (set-cursor (make-object cursor% 'blank)))
       (define (unhide-mouse) (set-cursor (make-object cursor% 'arrow)))))
 
-
   
   (define (gl-run)
     (let* ((frame (new frame% (label "OpenGL Window") 
