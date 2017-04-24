@@ -3,15 +3,24 @@
 (require (lib "gl.ss" "sgl")
          (lib "gl-vectors.ss" "sgl")
          "block.rkt"
+         "entities.rkt"
          "gl-frame.rkt"
          "input.rkt"
          "player.rkt"
          "world.rkt"
          "weapon-inactive.rkt"
+         "weapon-model.rkt"
          "zombie.rkt")
 
 ; contains camera position / location
 (define myPlayer (player))
+(define myEntities (entities))
+
+(define (initEntity)
+  ((myEntities 'add-entity)
+   (make-zombie 0 -10 5 -10))
+  ((myEntities 'add-entity)
+   (make-weapon 0 -9 4 9)))
 
 ; contains blocks in world
 (define myWorld (world myPlayer))
@@ -25,6 +34,7 @@
   ;(print (/ 1000.0 (- (current-inexact-milliseconds) lastTime)))
   ;(set! lastTime (current-inexact-milliseconds))
   ;(print " ")
+  (initEntity)
   
   (glClear (+ GL_COLOR_BUFFER_BIT GL_DEPTH_BUFFER_BIT))
   (glLoadIdentity)
