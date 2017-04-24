@@ -3,7 +3,6 @@
 (require (lib "gl.ss" "sgl")
          (lib "gl-vectors.ss" "sgl")
          "block.rkt"
-         "entities.rkt"
          "gl-frame.rkt"
          "input.rkt"
          "player.rkt"
@@ -13,11 +12,9 @@
 
 ; contains camera position / location
 (define myPlayer (player))
-(define myEntities (entities))
-((myEntities 'add-entity) (make-zombie 0 -10 5 -10))
 
 ; contains blocks in world
-(define myWorld (world))
+(define myWorld (world myPlayer))
 
 ; contains weapon
 (define iWeapon (inactive-weapon))
@@ -36,18 +33,18 @@
   (glRotated (myPlayer 'yrot) 0 1 0)
   (glRotated (myPlayer 'zrot) 0 0 1)
   
-  (glTranslated (myPlayer 'x) (myPlayer 'y) (myPlayer 'z))
+  (glTranslated  (- (myPlayer 'x)) (- (myPlayer 'y)) (- (myPlayer 'z)))
+
+  ;(print (list (round (myPlayer 'x)) (round (myPlayer 'y)) (round (myPlayer 'z))))
+  (myWorld 'update)
   
   (glBegin GL_QUADS)
-  (myEntities 'update)
-  (myEntities 'draw)
   (myWorld 'draw)
-  (glEnd)
-)
+  (glEnd))
 
 ;; Set the draw function
 (set-gl-draw-fn draw-opengl)
 (define window (gl-run))
 
 ; initialize input handling
-(init-input-listeners window myPlayer)
+(init-input-listeners window myPlayer myWorld)

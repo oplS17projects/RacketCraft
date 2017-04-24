@@ -1,6 +1,7 @@
 (module player racket/gui
   (require "weapon-inactive.rkt"
-           "weapon-model.rkt")
+           "weapon-model.rkt"
+           "entities.rkt")
   (provide player)
   (define (player)
     ; contains weapon
@@ -9,22 +10,39 @@
     ;; Player Attributes
     (define PLAYER-HEALTH 100)
     (define PLAYER-DAMAGE 10)
+    (define JUMP-VEL .4)
 
     ;; Player inventory
     ;; Todo -- Need to figure out how to make inventory list here
     
     ; Player move speed
-    (define MOVE_SPEED .6)
+    (define MOVE_SPEED .18)
+
+    ; height of entity in blocks
+    (define HEIGHT 2)
 
     ; Camera orientation
     (define xrot 0)
-    (define yrot 50)
+    (define yrot 150)
     (define zrot 0)
+    (define (set-xrot new-xrot) (set! xrot new-xrot))
+    (define (set-yrot new-yrot) (set! yrot new-yrot))
+    (define (set-zrot new-zrot) (set! zrot new-zrot))
 
     ; Camera Location
-    (define x 10)
-    (define y -6)
-    (define z -20)
+    (define x 1.0)
+    (define y 12.0)
+    (define z 1.0)
+    (define (set-x new-x) (set! x new-x))
+    (define (set-y new-y) (set! y new-y))
+    (define (set-z new-z) (set! z new-z))
+    
+    (define xvel 0)
+    (define yvel 0)
+    (define zvel 0)
+    (define (set-xvel new-xvel) (set! xvel new-xvel))
+    (define (set-yvel new-yvel) (set! yvel new-yvel))
+    (define (set-zvel new-zvel) (set! zvel new-zvel))
 
     (define (draw)
       ((make-weapon 'grass x y z) 'draw))
@@ -42,23 +60,36 @@
     (define (isDead)
       (equal? PLAYER-HEALTH 0))
 
+    (define (jump collides?)
+      (if (collides? x (+ (- y HEIGHT) GRAV-ACCEL) z)
+          (set-yvel (+ yvel JUMP-VEL))
+          0))
+
     (define (dispatch sym)
       (cond
         ((equal? sym 'xrot) xrot)
         ((equal? sym 'yrot) yrot)
         ((equal? sym 'zrot) zrot)
-        ((equal? sym 'set-xrot) (lambda (new-xrot) (set! xrot new-xrot)))
-        ((equal? sym 'set-yrot) (lambda (new-yrot) (set! yrot new-yrot)))
-        ((equal? sym 'set-zrot) (lambda (new-zrot) (set! zrot new-zrot)))
+        ((equal? sym 'set-xrot) set-xrot)
+        ((equal? sym 'set-yrot) set-yrot)
+        ((equal? sym 'set-zrot) set-zrot)
         ((equal? sym 'x) x)
         ((equal? sym 'y) y)
         ((equal? sym 'z) z)
+        ((equal? sym 'set-x) set-x)
+        ((equal? sym 'set-y) set-y)
+        ((equal? sym 'set-z) set-z)
+        ((equal? sym 'xvel) xvel)
+        ((equal? sym 'yvel) yvel)
+        ((equal? sym 'zvel) zvel)
+        ((equal? sym 'set-xvel) set-xvel)
+        ((equal? sym 'set-yvel) set-yvel)
+        ((equal? sym 'set-zvel) set-zvel)
+        ((equal? sym 'HEIGHT) HEIGHT)
+        ((equal? sym 'jump) jump)
         ((equal? sym 'attack) (attack))
         ((equal? sym 'isDead) (isDead))
         ((equal? sym 'get-hurt) (get-hurt))
-        ((equal? sym 'set-x) (lambda (new-x) (set! x new-x)))
-        ((equal? sym 'set-y) (lambda (new-y) (set! y new-y)))
-        ((equal? sym 'set-z) (lambda (new-z) (set! z new-z)))
         ((equal? sym 'draw) (draw))
         ((equal? sym 'ms) MOVE_SPEED)
         (else (error "unknown symbol sent to player dispatch" sym))))

@@ -1,11 +1,12 @@
 (module input racket/gui
   (require "gl-frame.rkt")
+  (require "entities.rkt")
   (provide init-input-listeners)
   
   ; simple function to convert degrees to radians
   (define (deg2rad x) (/ (* x pi) 180))
   
-  (define (init-input-listeners window player)
+  (define (init-input-listeners window player world)
   
     ; fixes the mouse to the center of the window
     (add-event-listener (lambda (event) (send window warp-pointer x-center y-center)))
@@ -20,20 +21,35 @@
                                    (else new-xrot)))
          ((player 'set-yrot) new-yrot))))
 
+    (add-event-listener
+     (lambda (event)
+       (if (send event get-left-down)
+           1
+           0)))
+    
     ;; Move forward
     (add-key-mapping #\w (lambda ()
-                           ((player 'set-x) (- (player 'x) (* (player 'ms) (sin (deg2rad (player 'yrot))))))
-                           ((player 'set-z) (+ (player 'z) (* (player 'ms) (cos (deg2rad (player 'yrot))))))))
-
+                           (safe-move player
+                                      (world 'collides?)
+                                      (+ (player 'x) (* (player 'ms) (sin (deg2rad (player 'yrot)))))
+                                      (- (player 'z) (* (player 'ms) (cos (deg2rad (player 'yrot))))))))
     ;; Move backward
     (add-key-mapping #\s (lambda ()
-                           ((player 'set-x) (+ (player 'x) (* (player 'ms) (sin (deg2rad (player 'yrot))))))
-                           ((player 'set-z) (- (player 'z) (* (player 'ms) (cos (deg2rad (player 'yrot))))))))
+                           (safe-move player
+                                      (world 'collides?)
+                                      (- (player 'x) (* (player 'ms) (sin (deg2rad (player 'yrot)))))
+                                      (+ (player 'z) (* (player 'ms) (cos (deg2rad (player 'yrot))))))))
     ;; Move left
-    (add-key-mapping #\a (lambda () 
-                           ((player 'set-x) (- (player 'x) (* (player 'ms) (sin (deg2rad (- (player 'yrot) 90))))))
-                           ((player 'set-z) (+ (player 'z) (* (player 'ms) (cos (deg2rad (- (player 'yrot) 90))))))))
+    (add-key-mapping #\a (lambda ()
+                           (safe-move player
+                                      (world 'collides?)
+                                      (+ (player 'x) (* (player 'ms) (sin (deg2rad (- (player 'yrot) 90)))))
+                                      (- (player 'z) (* (player 'ms) (cos (deg2rad (- (player 'yrot) 90))))))))
     ;; Move right
-    (add-key-mapping #\d (lambda () 
-                           ((player 'set-x) (+ (player 'x) (* (player 'ms) (sin (deg2rad (- (player 'yrot) 90))))))
-                           ((player 'set-z) (- (player 'z) (* (player 'ms) (cos (deg2rad (- (player 'yrot) 90))))))))))
+    (add-key-mapping #\d (lambda ()
+                           (safe-move player
+                                      (world 'collides?)
+                                      (- (player 'x) (* (player 'ms) (sin (deg2rad (- (player 'yrot) 90)))))
+                                      (+ (player 'z) (* (player 'ms) (cos (deg2rad (- (player 'yrot) 90))))))))
+    
+    (add-key-mapping #\space (lambda () ((player 'jump) (world 'collides?))))))

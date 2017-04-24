@@ -5,7 +5,7 @@
   (provide make-block
            BLOCK_SIZE)
   
-  (define BLOCK_SIZE 2)
+  (define BLOCK_SIZE 1)
   (define halfSize (/ BLOCK_SIZE 2))
   (define (make-block id x y z)
     (define texture (getTexture id))
@@ -88,6 +88,7 @@
         ((equal? sym 'make) (make))
         ((equal? sym 'get-distance) (get-distance))
         ((equal? sym 'size) BLOCK_SIZE)
+        ((equal? sym 'isEmpty) isEmpty)
         ((equal? sym 'setVisibility) setVisibility)))
 
     ; offsets for colored-draw func
