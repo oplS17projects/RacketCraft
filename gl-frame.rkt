@@ -1,13 +1,7 @@
-;; By Brendan Burns, with modifications by Scott Owens
 (module gl-frame racket/gui
   (require sgl/gl
            sgl/gl-vectors)
   (provide set-gl-draw-fn
-           init-textures
-           image->gl-vector
-           bitmap->gl-vector
-           gl-load-texture
-           get-texture
            add-key-mapping
            add-event-listener
            f-width
@@ -143,60 +137,4 @@
         (newline)
         (exit))
       (send frame show #t)
-      (identity frame)))
-  
-  (define *textures* '())
-  
-  (define init-textures
-    (lambda (count)
-      (set! *textures* (glGenTextures count))))
-  
-  (define (bitmap->gl-vector bmp)
-    (let* (
-           (dc (instantiate bitmap-dc% (bmp)))
-           (pixels (* (send bmp get-width) (send bmp get-height)))
-           (vec (make-gl-ubyte-vector (* pixels 3)))
-           (data (make-bytes (* pixels 4)))
-           (i 0)
-           )
-      (send dc get-argb-pixels 0 0 (send bmp get-width) (send bmp get-height) data)
-      (letrec
-          ([loop
-            (lambda ()
-              (when (< i pixels)
-                  (begin
-                    (gl-vector-set! vec (* i  3) 
-                                    (bytes-ref data (+ (* i 4) 1)))
-                    (gl-vector-set! vec (+ (* i 3) 1) 
-                                    (bytes-ref data (+ (* i 4) 2)))
-                    (gl-vector-set! vec (+ (* i 3) 2) 
-                                    (bytes-ref data (+ (* i 4) 3)))
-                    (set! i (+ i 1))
-                    (loop))))])
-        (loop))
-      (send dc set-bitmap #f)
-      (list (send bmp get-width) (send bmp get-height) vec)))
-  
-  (define (image->gl-vector file) (bitmap->gl-vector (make-object bitmap% file 'unknown #f)))
-  
-  (define gl-load-texture
-    (lambda (image-vector width height min-filter mag-filter ix)
-      (glBindTexture GL_TEXTURE_2D (gl-vector-ref *textures* ix))
-      (glTexParameteri GL_TEXTURE_2D GL_TEXTURE_MIN_FILTER min-filter)
-      (glTexParameteri GL_TEXTURE_2D GL_TEXTURE_MAG_FILTER mag-filter)
-      (let* ((new-width 128)
-             (new-height 128)
-             (new-img-vec (make-gl-ubyte-vector (* new-width new-height 3))))
-        (gluScaleImage GL_RGB
-                       width height GL_UNSIGNED_BYTE image-vector
-                       new-width new-height GL_UNSIGNED_BYTE new-img-vec)
-        (if (or (= min-filter GL_LINEAR_MIPMAP_NEAREST)
-                (= mag-filter GL_LINEAR_MIPMAP_NEAREST))
-            (gluBuild2DMipmaps GL_TEXTURE_2D 3 new-width new-height GL_RGB GL_UNSIGNED_BYTE new-img-vec)
-            (glTexImage2D GL_TEXTURE_2D 0 3 new-width new-height 0 GL_RGB GL_UNSIGNED_BYTE new-img-vec))))
-    )
-  
-  (define get-texture
-    (lambda (ix)
-      (gl-vector-ref *textures* ix)))
-  )
+      (identity frame))))

@@ -1,14 +1,12 @@
 (module block racket/gui
   (require sgl/gl
-           sgl/gl-vectors
-           "textures.rkt")
+           sgl/gl-vectors)
   (provide make-block
            BLOCK_SIZE)
   
   (define BLOCK_SIZE 1)
   (define halfSize (/ BLOCK_SIZE 2))
   (define (make-block id x y z)
-    (define texture (getTexture id))
     (define empty? (equal? id 'empty))
     (define renderSide1 #f) ; (y = 1)
     (define renderSide2 #f) ; (y = -1)
