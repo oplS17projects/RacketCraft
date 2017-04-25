@@ -40,7 +40,11 @@
     (define y 12.0)
     (define z 1.0)
     (define (set-x new-x) (set! x new-x))
-    (define (set-y new-y) (set! y new-y))
+    (define (set-y new-y) (if (< new-y -200)
+                              (begin (set! y 100)
+                                     (set! x 10)
+                                     (set! z 10))
+                              (set! y new-y)))
     (define (set-z new-z) (set! z new-z))
     
     (define xvel 0)

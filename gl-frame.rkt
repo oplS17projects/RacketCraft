@@ -50,11 +50,13 @@
     (set! x-center (quotient width 2))
     (set! y-center (quotient height 2)))
   
-  (define (recursive-handle-key list code)
+  (define (recursive-handle-key list key code)
     (cond
       ((empty? list) void)
-      ((equal? (caar list) code) ((car (cdr (car list)))))
-      (else (recursive-handle-key (rest list) code))))
+      ((or (equal? (caar list) code)
+           (equal? (caar list) (send key get-key-release-code)))
+       ((car (cdr (car list))) (not (equal? code 'release))))
+      (else (recursive-handle-key (rest list) key code))))
   
   (define *key-mappings* '())
   
@@ -65,7 +67,8 @@
     (set! *key-mappings* '()))
   
   (define (gl-handlekey key)
-    (recursive-handle-key *key-mappings* (send key get-key-code)))
+    ;(print (send key get-key-code))
+    (recursive-handle-key *key-mappings* key (send key get-key-code)))
 
   (define elisteners '())
 

@@ -85,7 +85,7 @@
             (not (block 'empty?)))))
 
     (define (break-block-by-player)
-      (define BREAK-DISTANCE 3)
+      (define BREAK-DISTANCE 4)
       (define CHECK-DIVIDE 9)
       (define total-iters (* BREAK-DISTANCE CHECK-DIVIDE))
       
