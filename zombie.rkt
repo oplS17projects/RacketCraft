@@ -1,7 +1,6 @@
 (module gl-frame racket/gui
   (require sgl/gl
-           sgl/gl-vectors
-           "textures.rkt")
+           sgl/gl-vectors)
   (provide make-zombie)
 
   (define BLOCK_SIZE 0.5)
@@ -15,7 +14,6 @@
   (define halfSize (/ BLOCK_SIZE 2))
   
   (define (make-zombie id x y z)
-    (define texture (getTexture id))
     (define x1 (+ x halfSize))
     (define xn1 (- x halfSize))
     (define y1 (+ y halfSize))

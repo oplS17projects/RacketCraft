@@ -17,7 +17,6 @@
     (define isVisible #t)   ; used to check if this block is visible
 
     (define (set-id newId)
-      (set! texture (getTexture id))
       (set! id newId)
       (set! empty? (equal? id 'empty)))
   

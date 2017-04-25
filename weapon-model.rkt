@@ -1,7 +1,6 @@
 (module gl-frame racket/gui
   (require sgl/gl
-           sgl/gl-vectors
-           "textures.rkt")
+           sgl/gl-vectors)
   
   (provide make-weapon)
   (define weapon_height 0.8)
