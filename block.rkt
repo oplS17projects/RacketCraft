@@ -96,12 +96,12 @@
     (define z1 (+ z halfSize))
     (define zn1 (- z halfSize))
     ; random colors until textures are figured out
-    (define c1 (/ (random 100) 100.0))
-    (define c2 (/ (random 100) 100.0))
-    (define c3 (/ (random 100) 100.0))
-    (define c4 (/ (random 100) 100.0))
-    (define c5 (/ (random 100) 100.0))
-    (define c6 (/ (random 100) 100.0))
+    (define c1 (/ (+ 60 (random 30)) 100.0))
+    (define c2 (/ (+ 60 (random 30)) 100.0))
+    (define c3 (/ (+ 60 (random 30)) 100.0))
+    (define c4 (/ (+ 60 (random 30)) 100.0))
+    (define c5 (/ (+ 60 (random 30)) 100.0))
+    (define c6 (/ (+ 60 (random 30)) 100.0))
     
     (define (drawSide1)
       ; Top face
