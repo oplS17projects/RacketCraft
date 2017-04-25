@@ -45,7 +45,7 @@
   
   (glTranslated  (- (myPlayer 'x)) (- (myPlayer 'y)) (- (myPlayer 'z)))
 
-  ;(print (list (round (myPlayer 'x)) (round (myPlayer 'y)) (round (myPlayer 'z))))
+  ;(print (list (myPlayer 'x) (myPlayer 'y) (myPlayer 'z)))
   (myWorld 'update)
   
   (glBegin GL_QUADS)

@@ -2,6 +2,7 @@
   (require "weapon-inactive.rkt"
            "weapon-model.rkt"
            "entities.rkt"
+           "myMath.rkt"
            math/array
            racket/vector
            sgl/gl
@@ -23,11 +24,12 @@
     (define MOVE_SPEED .18)
 
     ; height of entity in blocks
-    (define HEIGHT 2)
+    (define HEIGHT 1.9)
+    (define BINDPOSE (list 0 0 -1))
 
     ; Camera orientation
     (define xrot 0)
-    (define yrot 150)
+    (define yrot 0)
     (define zrot 0)
     (define (set-xrot new-xrot) (set! xrot new-xrot))
     (define (set-yrot new-yrot) (set! yrot new-yrot))
@@ -69,10 +71,13 @@
           (* (abs from-distance) PLAYER-DAMAGE)
           PLAYER-DAMAGE))
 
+    (define (getray)
+      (rotate-by-yrot yrot (rotate-by-xrot xrot BINDPOSE)))
+    
     ;; Currently doing the algorithms based on http://antongerdelan.net/opengl/raycasting.html
     ;; Will find a way with camera rotation direction
     ;; Mouse x Mouse y is the position of the mouse click on the screen -- not on the racketworld
-    (define (getray mousex mousey)
+    (define (myray mousex mousey)
       ;; Getting the values to all views and projections
       (begin (glGetFloatv GL_PROJECTION_MATRIX projects)
              ;; binding the camera direction into a matrix
@@ -129,6 +134,7 @@
         ((equal? sym 'HEIGHT) HEIGHT)
         ((equal? sym 'jump) jump)
         ((equal? sym 'getray) (getray))
+        ((equal? sym 'myray) (myray))
         ((equal? sym 'attack) (attack))
         ((equal? sym 'isDead) (isDead))
         ((equal? sym 'get-hurt) (get-hurt))

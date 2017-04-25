@@ -102,7 +102,6 @@
            (gl-resize w h))))
       
       (define/override (on-char key)
-        ;(set! refresh-queue (+ refresh-queue 1))
         (gl-handlekey key)
         (refresh))
 

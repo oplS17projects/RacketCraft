@@ -79,11 +79,29 @@
                            0))))))
     
     (define (collides? x y z)
-      ;(print (list (round x) " " (round y) " " (round z)))
       (let ([block (get-block x y z)])
         (if (equal? block -1)
             #f
-            (not (block 'isEmpty)))))
+            (not (block 'empty?)))))
+
+    (define (break-block-by-player)
+      (define BREAK-DISTANCE 3)
+      (define CHECK-DIVIDE 9)
+      (define total-iters (* BREAK-DISTANCE CHECK-DIVIDE))
+      
+      (define ray (myPlayer 'getray))
+      (define x-incr (/ (car ray) CHECK-DIVIDE))
+      (define y-incr (/ (cadr ray) CHECK-DIVIDE))
+      (define z-incr (/ (caddr ray) CHECK-DIVIDE))
+      (define (find-block-on-ray xcomp ycomp zcomp attempts)
+        (let ([block (get-block xcomp ycomp zcomp)])
+          (if (or (equal? block -1) (block 'empty?))
+              (if (< attempts total-iters)
+                  (find-block-on-ray (+ xcomp x-incr) (+ ycomp y-incr) (+ zcomp z-incr) (+ attempts 1))
+                  0)
+              (set-block xcomp ycomp zcomp 'empty))))
+              
+      (find-block-on-ray (myPlayer 'x) (myPlayer 'y) (myPlayer 'z) 0))
 
     (define (update)
       (apply-grav myPlayer collides?)
@@ -92,19 +110,10 @@
     (define (dispatch sym)
       (cond ((equal? sym 'draw) (draw))
             ((equal? sym 'update) (update))
-            ((equal? sym 'collides?) collides?)))
+            ((equal? sym 'collides?) collides?)
+            ((equal? sym 'break-block-by-player) (break-block-by-player))))
     
     (init-world grid)
-    (set-block 4 4 4 'empty)
-    (set-block 29 9 29 'empty)
-    (set-block 28 9 28 'empty)
-    (set-block 28 9 29 'empty)
-    (set-block 29 9 28 'empty)
-    (set-block 29 8 29 'empty)
-    (set-block 28 8 28 'empty)
-    (set-block 28 8 29 'empty)
-    (set-block 29 8 28 'empty)
-    (print (collides? 29 9 29))
     dispatch)
 
   (define (init-world grid)

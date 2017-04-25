@@ -9,7 +9,7 @@
   (define halfSize (/ BLOCK_SIZE 2))
   (define (make-block id x y z)
     (define texture (getTexture id))
-    (define isEmpty (equal? id 'empty))
+    (define empty? (equal? id 'empty))
     (define renderSide1 #f) ; (y = 1)
     (define renderSide2 #f) ; (y = -1)
     (define renderSide3 #f) ; (z = 1)
@@ -21,10 +21,10 @@
     (define (set-id newId)
       (set! texture (getTexture id))
       (set! id newId)
-      (set! isEmpty (equal? id 'empty)))
+      (set! empty? (equal? id 'empty)))
   
     (define (draw)
-      (if isEmpty
+      (if empty?
           0
           (colored-draw)))
     
@@ -88,7 +88,7 @@
         ((equal? sym 'make) (make))
         ((equal? sym 'get-distance) (get-distance))
         ((equal? sym 'size) BLOCK_SIZE)
-        ((equal? sym 'isEmpty) isEmpty)
+        ((equal? sym 'empty?) empty?)
         ((equal? sym 'setVisibility) setVisibility)))
 
     ; offsets for colored-draw func

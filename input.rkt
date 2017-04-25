@@ -1,10 +1,8 @@
 (module input racket/gui
-  (require "gl-frame.rkt")
-  (require "entities.rkt")
+  (require "gl-frame.rkt"
+           "entities.rkt"
+           "myMath.rkt")
   (provide init-input-listeners)
-  
-  ; simple function to convert degrees to radians
-  (define (deg2rad x) (/ (* x pi) 180))
   
   (define (init-input-listeners window player world)
   
@@ -23,8 +21,8 @@
 
     (add-event-listener
      (lambda (event)
-       (if (send event get-left-down)
-           1
+       (if (or (send event get-left-down) (equal? (send event get-event-type) 'left-up))
+           (world 'break-block-by-player)
            0)))
     
     ;; Move forward
