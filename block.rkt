@@ -54,12 +54,6 @@
              ;; will update later to check visible values by "cond"
              ;; and set isVisible #t or #f afterward
              (set! isVisible #t)))
-    
-    (define (get-distance player-x player-y player-z)
-      (let ((dx (- (sqr (abs x)) (sqr (abs player-x))))
-            (dy (- (sqr (abs y)) (sqr (abs player-y))))
-            (dz (- (sqr (abs z)) (sqr (abs player-z)))))
-       (sqrt (+ dx dy dz))))
 
     (define (break)
       (if (equal? isVisible #t)
@@ -83,9 +77,9 @@
         ((equal? sym 'set-id) set-id)
         ((equal? sym 'break) (break))
         ((equal? sym 'make) (make))
-        ((equal? sym 'get-distance) (get-distance))
         ((equal? sym 'size) BLOCK_SIZE)
         ((equal? sym 'empty?) empty?)
+        ((equal? sym 'getPlane) getPlane)
         ((equal? sym 'setVisibility) setVisibility)))
 
     ; offsets for colored-draw func
@@ -150,5 +144,28 @@
       (glVertex3f x1  y1  z1)
       (glVertex3f x1 yn1  z1)
       (glVertex3f x1 yn1 zn1))
+
+    (define (getPlane x)
+      (define p_no
+        (cond
+          [(equal? x 1) (list 0 1 0)]
+          [(equal? x 2) (list 0 -1 0)]
+          [(equal? x 3) (list 0 0 1)]
+          [(equal? x 4) (list 0 0 -1)]
+          [(equal? x 5) (list -1 0 0)]
+          [(equal? x 6) (list 1 0 0)]))
+      (define p_co
+        (cond
+          [(equal? x 1) (list x (+ y halfSize) z)]
+          [(equal? x 2) (list x (- y halfSize) z)]
+          [(equal? x 3) (list x y (+ z halfSize))]
+          [(equal? x 4) (list x y (- z halfSize))]
+          [(equal? x 5) (list (- x halfSize) y z)]
+          [(equal? x 6) (list (+ x halfSize) y z)]))
+      (define (dispatch sym)
+        (cond
+          [(equal? sym 'p_no) p_no]
+          [(equal? sym 'p_co) p_co]))
+      dispatch)
     
     dispatch))

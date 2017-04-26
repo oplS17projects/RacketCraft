@@ -1,6 +1,7 @@
 (module world racket/gui
   (require "block.rkt"
            "entities.rkt"
+           "myMath.rkt"
            "zombie.rkt")
   (provide world)
   
@@ -63,20 +64,30 @@
       (let* ([x (round x)]
              [y (round y)]
              [z (round z)]
-             [block (get-block x y z)]
-             [oldId (block 'id)])
-        (if (equal? oldId newId)
-            ; dont do anything same ID
-            0
-            (begin ((block 'set-id) newId)
-                   (if (equal? newId 'empty)
-                       ;turn on all adjacent quads
-                       (setAdjacentVisibility x y z #t)
-                       (if (equal? oldId 'empty)
-                           ;turn off all adjacent quads
-                           (setAdjacentVisibility x y z #f)
-                           ;dont do anything
-                           0))))))
+             [block (get-block x y z)])
+        (if (equal? block -1)
+            ; block doesn't exist at that index
+            -1
+            (let ([oldId (block 'id)]
+                  [height (myPlayer 'HEIGHT)])
+              (if (or (equal? oldId newId)
+                      (and (= x (round (myPlayer 'x)))
+                           (= y (round (myPlayer 'y)))
+                           (= z (round (myPlayer 'z))))
+                      (and (= x (round (myPlayer 'x)))
+                           (= y (round (- (myPlayer 'y) height)))
+                           (= z (round (myPlayer 'z)))))
+                  ; dont do anything same ID
+                  0
+                  (begin ((block 'set-id) newId)
+                         (if (equal? newId 'empty)
+                             ;turn on all adjacent quads
+                             (setAdjacentVisibility x y z #t)
+                             (if (equal? oldId 'empty)
+                                 ;turn off all adjacent quads
+                                 (setAdjacentVisibility x y z #f)
+                                 ;dont do anything
+                                 0))))))))
     
     (define (collides? x y z)
       (let ([block (get-block x y z)])
@@ -85,9 +96,9 @@
             (not (block 'empty?)))))
 
     (define (break-block-by-player)
-      (define BREAK-DISTANCE 4)
+      (define SCAN-DISTANCE 5)
       (define CHECK-DIVIDE 9)
-      (define total-iters (* BREAK-DISTANCE CHECK-DIVIDE))
+      (define total-iters (* SCAN-DISTANCE CHECK-DIVIDE))
       
       (define ray (myPlayer 'getray))
       (define x-incr (/ (car ray) CHECK-DIVIDE))
@@ -103,6 +114,95 @@
               
       (find-block-on-ray (myPlayer 'x) (myPlayer 'y) (myPlayer 'z) 0))
 
+
+    (define (place-block-by-player)
+      (define SCAN-DISTANCE 5)
+      (define CHECK-DIVIDE 9)
+      (define total-iters (* SCAN-DISTANCE CHECK-DIVIDE))
+      
+      (define ray (myPlayer 'getray))
+      (define x-incr (/ (car ray) CHECK-DIVIDE))
+      (define y-incr (/ (cadr ray) CHECK-DIVIDE))
+      (define z-incr (/ (caddr ray) CHECK-DIVIDE))
+      (define (find-block-on-ray xcomp ycomp zcomp attempts)
+        (let ([block (get-block xcomp ycomp zcomp)])
+          (if (or (equal? block -1) (block 'empty?))
+              (if (< attempts total-iters)
+                  (find-block-on-ray (+ xcomp x-incr) (+ ycomp y-incr) (+ zcomp z-incr) (+ attempts 1))
+                  0)
+              (step-back xcomp ycomp zcomp (round xcomp) (round ycomp) (round zcomp) 0))))
+      (define (step-back xcomp ycomp zcomp clickedx clickedy clickedz attempts)
+        (if (> attempts 50) ; in-case the spaghetti code doesnt succeed, avoids infinite loop at least.
+            0
+            (if (and (= (round xcomp) clickedx)
+                     (= (round ycomp) clickedy)
+                     (= (round zcomp) clickedz))
+                (step-back (- xcomp x-incr) (- ycomp y-incr) (- zcomp z-incr) clickedx clickedy clickedz (+ attempts 1))
+                (set-block xcomp ycomp zcomp 'grass))))
+              
+      (find-block-on-ray (myPlayer 'x) (myPlayer 'y) (myPlayer 'z) 0))
+;    (define (place-block-by-player)
+;      (define SCAN-DISTANCE 4)
+;      (define CHECK-DIVIDE 9)
+;      (define total-iters (* SCAN-DISTANCE CHECK-DIVIDE))
+;      
+;      (define ray (myPlayer 'getray))
+;      (define x-incr (/ (car ray) CHECK-DIVIDE))
+;      (define y-incr (/ (cadr ray) CHECK-DIVIDE))
+;      (define z-incr (/ (caddr ray) CHECK-DIVIDE))
+;      (define (find-block-on-ray xcomp ycomp zcomp attempts)
+;        (let ([block (get-block xcomp ycomp zcomp)])
+;          (if (or (equal? block -1) (block 'empty?))
+;              (if (< attempts total-iters)
+;                  (find-block-on-ray (+ xcomp x-incr) (+ ycomp y-incr) (+ zcomp z-incr) (+ attempts 1))
+;                  0)
+;              (let ([side (find-clicked-side (round xcomp) (round ycomp) (round zcomp) block)])
+;                (print side)
+;                (cond ((equal? side 1) (set-block xcomp        (+ ycomp 1)  zcomp        'grass))
+;                      ((equal? side 2) (set-block xcomp        (+ ycomp -1) zcomp        'grass))
+;                      ((equal? side 3) (set-block xcomp        ycomp        (+ zcomp 1)  'grass))
+;                      ((equal? side 4) (set-block xcomp        ycomp        (+ zcomp -1) 'grass))
+;                      ((equal? side 5) (set-block (+ xcomp -1) ycomp        zcomp        'grass))
+;                      ((equal? side 6) (set-block (+ xcomp 1)  ycomp        zcomp        'grass)))))))
+;      (define (find-clicked-side x y z block)
+;        (let ([halfSize (/ (block 'size) 2)])
+;          (let ([p1 (list (+ x halfSize) (+ y halfSize) (+ z halfSize))]
+;                [p2 (list (+ x halfSize) (+ y halfSize) (- z halfSize))]
+;                [p3 (list (+ x halfSize) (- y halfSize) (+ z halfSize))]
+;                [p4 (list (+ x halfSize) (- y halfSize) (- z halfSize))]
+;                [p5 (list (- x halfSize) (+ y halfSize) (+ z halfSize))]
+;                [p6 (list (- x halfSize) (+ y halfSize) (- z halfSize))]
+;                [p7 (list (- x halfSize) (- y halfSize) (+ z halfSize))])
+;            (let ([planes (list ((block 'getPlane) 1) ; (y = 1)
+;                                ((block 'getPlane) 2) ; (y = -1)
+;                                ((block 'getPlane) 3) ; (z = 1)
+;                                ((block 'getPlane) 4) ; (z = -1)
+;                                ((block 'getPlane) 5) ; (x = -1)
+;                                ((block 'getPlane) 6))]); (x = 1)
+;              (define planenum 0)
+;              (printf "\n\nplayer: ~a ~a ~a\n" (myPlayer 'x) (myPlayer 'y) (myPlayer'z))
+;              (printf "slope: ~a ~a ~a\n" (car ray) (cadr ray) (caddr ray))
+;              (printf "block: ~a ~a ~a\n" x y z)
+;              (let ([clicked-side (foldl (lambda (plane result)
+;                       (set! planenum (+ planenum 1))
+;                       (let* ([blockpt (list (block 'x) (block 'y) (block 'z))]
+;                              [playerpt (list (myPlayer 'x) (myPlayer 'y) (myPlayer 'z))]
+;                              [intersection (find-intersect plane blockpt (list (car ray) (cadr ray) (caddr ray)))])
+;                         (printf "~a ... distance: ~a\n" intersection (distance blockpt intersection))
+;                         (if (or (equal? intersection -1) (> (distance blockpt intersection) (sqrt (* 2 (expt halfSize 2))))) ;(sqrt (+ (expt (block 'size) 2) (expt (block 'size) 2)))
+;                             result
+;                             (if (equal? result -1)
+;                                 (cons intersection planenum)
+;                                 (if (< (distance playerpt intersection) (distance playerpt (car result)))
+;                                     (cons intersection planenum)
+;                                     result)))))
+;                     -1 planes)])
+;                (if (equal? clicked-side -1)
+;                    -1
+;                    (cdr clicked-side)))))))
+;          
+;      (find-block-on-ray (myPlayer 'x) (myPlayer 'y) (myPlayer 'z) 0))
+
     (define (update)
       (apply-grav myPlayer collides?)
       (myEntities 'update))
@@ -111,7 +211,8 @@
       (cond ((equal? sym 'draw) (draw))
             ((equal? sym 'update) (update))
             ((equal? sym 'collides?) collides?)
-            ((equal? sym 'break-block-by-player) (break-block-by-player))))
+            ((equal? sym 'break-block-by-player) (break-block-by-player))
+            ((equal? sym 'place-block-by-player) (place-block-by-player))))
     
     (init-world grid)
     dispatch)

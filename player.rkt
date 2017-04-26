@@ -29,7 +29,7 @@
 
     ; Camera orientation
     (define xrot 0)
-    (define yrot 0)
+    (define yrot 135)
     (define zrot 0)
     (define (set-xrot new-xrot) (set! xrot new-xrot))
     (define (set-yrot new-yrot) (set! yrot new-yrot))
@@ -43,7 +43,9 @@
     (define (set-y new-y) (if (< new-y -200)
                               (begin (set! y 100)
                                      (set! x 10)
-                                     (set! z 10))
+                                     (set! z 10)
+                                     (set! xrot 90)
+                                     (set! yrot 135))
                               (set! y new-y)))
     (define (set-z new-z) (set! z new-z))
     
@@ -53,19 +55,6 @@
     (define (set-xvel new-xvel) (set! xvel new-xvel))
     (define (set-yvel new-yvel) (set! yvel new-yvel))
     (define (set-zvel new-zvel) (set! zvel new-zvel))
-
-    ;; Variables needed to get ray
-    (define projects (make-gl-float-vector 10))
-    (define views (make-gl-float-vector 10))
-    (define ports (make-gl-float-vector 10))
-    (define ray-start (make-gl-float-vector 3))
-    (define ray-end (make-gl-float-vector 3))
-    (define rayx-start 0)
-    (define rayy-start 0)
-    (define rayz-start 0)
-    (define rayx-end 0)
-    (define rayy-end 0)
-    (define rayz-end 0)
 
     (define (draw)
       ((make-weapon 'grass x y z) 'draw))
@@ -78,30 +67,6 @@
     (define (getray)
       (rotate-by-yrot yrot (rotate-by-xrot xrot BINDPOSE)))
     
-    ;; Currently doing the algorithms based on http://antongerdelan.net/opengl/raycasting.html
-    ;; Will find a way with camera rotation direction
-    ;; Mouse x Mouse y is the position of the mouse click on the screen -- not on the racketworld
-    (define (myray mousex mousey)
-      ;; Getting the values to all views and projections
-      (begin (glGetFloatv GL_PROJECTION_MATRIX projects)
-             ;; binding the camera direction into a matrix
-             ;; if this doesn't work as expected, we could bind x-y-zrot into a new vector3f
-             (glGetFloatv GL_MODELVIEW_MATRIX views) 
-             (glGetIntegerv GL_VIEWPORT ports))
-      
-      (if (not (and (equal? (vector-length projects) 0)
-                    (equal? (vector-length views) 0)
-                    (equal? (vector-length ports) 0)))
-          (begin (gluUnProject mousex mousey 0 views projects ports ray-start)
-                 (gluUnProject mousex mousey 1 views projects ports ray-end)
-                 (if (not (and (equal? (vector-length ray-start) 0)
-                               (equal? (vector-length ray-end) 0)))
-                     (begin (vector->values ray-start rayx-start rayy-start rayz-start)
-                            (vector->values ray-end rayx-end rayy-end rayz-end))
-                     "Failed to get Ray vector"))
-          "Failed getting port views")
-      )
-
     (define (get-hurt damage)
       (if (> damage PLAYER-HEALTH)
           (set! PLAYER-HEALTH 0)
@@ -138,7 +103,6 @@
         ((equal? sym 'HEIGHT) HEIGHT)
         ((equal? sym 'jump) jump)
         ((equal? sym 'getray) (getray))
-        ((equal? sym 'myray) (myray))
         ((equal? sym 'attack) (attack))
         ((equal? sym 'isDead) (isDead))
         ((equal? sym 'get-hurt) (get-hurt))

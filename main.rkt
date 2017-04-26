@@ -50,7 +50,39 @@
   
   (glBegin GL_QUADS)
   (myWorld 'draw)
-  (glEnd))
+  (glEnd)
+  (draw-crosshair))
+
+(define (draw-crosshair)
+  (define RADIUS 9)
+  (define THICK 1)
+  (glMatrixMode GL_PROJECTION)
+  (glPushMatrix)
+  (glLoadIdentity)
+  (glOrtho 0.0 f-width f-height 0.0 -1.0 10.0)
+  (glMatrixMode GL_MODELVIEW)
+  (glLoadIdentity)
+  (glDisable GL_CULL_FACE)
+
+  (glClear GL_DEPTH_BUFFER_BIT)
+
+  (glBegin GL_QUADS)
+  (glColor3f .7 .7 .7)
+  (glVertex2f (- x-center THICK) (+ y-center RADIUS))
+  (glVertex2f (+ x-center THICK) (+ y-center RADIUS))
+  (glVertex2f (+ x-center THICK) (- y-center RADIUS))
+  (glVertex2f (- x-center THICK) (- y-center RADIUS))
+  
+  (glVertex2f (- x-center RADIUS) (+ y-center THICK))
+  (glVertex2f (+ x-center RADIUS) (+ y-center THICK))
+  (glVertex2f (+ x-center RADIUS) (- y-center THICK))
+  (glVertex2f (- x-center RADIUS) (- y-center THICK))
+  (glEnd)
+
+  ; Making sure we can render 3d again
+  (glMatrixMode GL_PROJECTION)
+  (glPopMatrix)
+  (glMatrixMode GL_MODELVIEW))
 
 ;; Set the draw function
 (set-gl-draw-fn draw-opengl)

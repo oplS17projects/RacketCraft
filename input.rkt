@@ -23,7 +23,9 @@
      (lambda (event)
        (if (or (send event get-left-down) (equal? (send event get-event-type) 'left-up))
            (world 'break-block-by-player)
-           0)))
+           (if (or (send event get-right-down) (equal? (send event get-event-type) 'right-up))
+               (world 'place-block-by-player)
+               0))))
 
     (define REPRESS-TIME 0.04)
     (define loopW? #f)
