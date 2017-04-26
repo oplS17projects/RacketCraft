@@ -1,7 +1,6 @@
 (module gl-frame racket/gui
   (require sgl/gl
-           sgl/gl-vectors
-           "textures.rkt")
+           sgl/gl-vectors)
   
   (provide make-sheep)
   
@@ -9,7 +8,6 @@
   (define halfSize (/ BLOCK_SIZE 2))
   
   (define (make-sheep id x y z)
-    (define texture (getTexture id))
     (define x1 (+ x halfSize))
     (define xn1 (- x halfSize))
     (define y1 (+ y halfSize 1))       ;; make the sheep run above the ground like 1px

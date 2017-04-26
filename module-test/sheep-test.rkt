@@ -22,7 +22,7 @@
   (glTranslated (myPlayer 'x) (myPlayer 'y) (myPlayer 'z))
   
   (glBegin GL_QUADS)
-    ((make-sheep 'grass 5 0 0) 'draw)
+    ((make-sheep 'grass 0 0 0) 'draw)
   (glEnd)
 )
 

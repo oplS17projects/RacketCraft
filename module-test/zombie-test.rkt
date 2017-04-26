@@ -111,7 +111,7 @@
   (glTranslated (myPlayer 'x) (myPlayer 'y) (myPlayer 'z))
   
   (glBegin GL_QUADS)
-    ((make-zombie 'grass 5 0 0) 'draw)
+    ((make-zombie 0 9 12 9) 'draw)
   (glEnd)
 )
 

@@ -2,20 +2,30 @@
   (require "block.rkt"
            "entities.rkt"
            "myMath.rkt"
+           "sheep.rkt"
+           "weapon-model.rkt"
            "zombie.rkt")
   (provide world)
   
-  (define myEntities (entities))
-  ((myEntities 'add-entity) (make-zombie 0 -10 5 -10))
-  
-  (define X-LEN 30)
+  (define (initEntities myEntities)
+    ((myEntities 'add-entity)
+     (make-zombie 0 3 12 -3))
+    ((myEntities 'add-entity)
+     (make-sheep 0 14 11 14))
+    ((myEntities 'add-entity)
+     (make-weapon 0 4 11 4)))
+
+  (define X-LEN 20)
   (define Y-LEN 10)
-  (define Z-LEN 30)
+  (define Z-LEN 20)
   
   (define (world myPlayer)
     ; This is just an array of spaces, not necessarily blocks.
     (define grid
       (init-grid X-LEN Y-LEN Z-LEN))
+
+    (define myEntities (entities))
+    (initEntities myEntities)
     
     (define (draw)
       (for-each (lambda (plane)

@@ -22,7 +22,7 @@
   (glTranslated (myPlayer 'x) (myPlayer 'y) (myPlayer 'z))
   
   (glBegin GL_QUADS)
-    ((make-weapon 'grass 10 0 0) 'draw)
+    ((make-weapon 0 2 12 2) 'draw)
   (glEnd)
 )
 

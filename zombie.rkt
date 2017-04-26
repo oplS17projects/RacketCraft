@@ -123,7 +123,7 @@
       (glVertex3f (- xbn1 0.3) yb1 zn1)
       (glVertex3f xbn1 yb1 zn1)
       (glVertex3f xbn1 yb1 (+ z1 2.5))
-      (glVertex3f (- xbn1 0.3)  yb1 (+ z1 3))
+      (glVertex3f (- xbn1 0.3)  yb1 (+ z1 2.5))
  
       (glColor3f 0.35 0.35 0.35)
       (glVertex3f (- xbn1 0.3) yhd1 (+ z1 2.5))
