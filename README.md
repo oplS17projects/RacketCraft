@@ -58,6 +58,8 @@ Explain exactly what you'll have at the end. What will it be able to do at the l
 ### Evaluation of Results
 How will you know if you are successful? 
 If you include some kind of _quantitative analysis,_ that would be good.
+- I think we have done this project as of 95% as planned at the beginnin since all of the goals are finished completely.
+- The other 5% are not satisfied is that the models are not as pretty as we thought. It's hard to make the model pretty with pure OpenGL vectors.
 
 ## Architecture Diagram
 ![alt tag](https://github.com/oplS17projects/RacketCraft/blob/master/Artboard.png)
@@ -76,8 +78,17 @@ If you include some kind of _quantitative analysis,_ that would be good.
 - Collision physics so you dont fall through the world.
 - health bar, takes falling damage
 
-### Public Presentation (Mon Apr 24, Wed Apr 26, or Fri Apr 28 [your date to be determined later])
+### Public Presentation (Mon Apr 24, Wed Apr 26, or Fri Apr 28)
 - Complete a stretch goal, most likely implement other entities like animals or hostile creatures.
+
+Until now, things we have done are:
+- Able to draw a world made by blocks
+- Able to create a first person's view in the game (player)
+- Able to walk by using A,W,S,D keys and change view direction by moving the mouse.
+- Able to place and break blocks (placing block is on testing period so it might not be fully working).
+- Able to draw zombies and sheeps in the world.
+- We now can check which block should be broken and which should not by comparing the distance and ray line from the  view direction of player.
+- We also apply gravity into the RacketCraft world, so when we jump and walk onto a block, it feels real.
 
 ## Presentation Slides
 Slides available at: https://docs.google.com/presentation/d/1srbz82QFLJGQBim3tOUbULgHD4rR_sbK0Ar46lQP2iM/edit?usp=sharing
@@ -85,6 +96,9 @@ Slides available at: https://docs.google.com/presentation/d/1srbz82QFLJGQBim3tOU
 ## Team Declaration and Group Responsibilities
 ### Hung Nguyen @hnguyenworkstation
 Hung will do documentation and work on the game play, objects....
+- So far, Hung has made the models for zombies, sheeps and weapon.
+- Hung applied coordinate of mouse to calculate the ray vector of mouse clicking to the object.
+- For example, when we move the mouse and click on a block, we able to get the ray vector from our camera to that block at the center at the screen so we will be able to correctly interact with it.
 
 ### Christopher Munroe @idkm23 
 Christopher is team lead. Additionally, Chris will work on game development...   
